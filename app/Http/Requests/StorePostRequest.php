@@ -20,7 +20,7 @@ class StorePostRequest extends FormRequest
             'title' => 'required|string|max:255',
             'short_content' => 'required|string',
             'content' => 'required|string',
-            'photo' => 'required|file|image|max:2048', // Ensure the file is an image
+            'photo' => 'file|image|max:2048', // Ensure the file is an image
         ];
     }
     public function messages(): array

@@ -13,7 +13,7 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::latest()->paginate(9);
         return view('posts.index')->with('posts', $posts);
     }
 
@@ -49,20 +49,40 @@ class PostController extends Controller
         ]);
     }
 
-    public function edit(string $id)
+    public function edit(Post $post)
     {
-        //
+        return view('posts.edit')->with(['post' => $post]);
     }
 
 
-    public function update(Request $request, string $id)
+    public function update(StorePostRequest $request, Post $post)
     {
-        //
+
+        if ($request->hasFile('photo')) {
+            if (isset($post->photo)) {
+                Storage::delete($post->photo);
+            }
+            $file = $request->file('photo');
+            $name = time() . '-' . $file->getClientOriginalName();
+            $path = $file->storeAs('images', $name, 'public');
+        }
+        $post->update([
+            'title' => $request->title,
+            'short_content' => $request->short_content,
+            'content' => $request->content,
+            'photo' => $path ?? $post->photo
+        ]);
+
+        return redirect()->route('posts.show', ['post' => $post->id]);
     }
 
 
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+        if (isset($post->photo)) {
+            Storage::delete($post->photo);
+        }
+        $post->delete();
+        return redirect()->route('posts.index');
     }
 }

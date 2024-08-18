@@ -44,8 +44,10 @@
                             href="{{ route('posts.show', ['post' => $post->id]) }}">Read More</a>
                     </div>
                 @endforeach
-
-                <div class="col-12">
+                <div class="col-12 d-flex justify-content-between align-items-cente">
+                    {{ $posts->links() }}
+                </div>
+                {{-- <div class="col-12">
                     <nav aria-label="Page navigation">
                         <ul class="pagination pagination-lg justify-content-center mb-0">
                             <li class="page-item disabled">
@@ -65,7 +67,7 @@
                             </li>
                         </ul>
                     </nav>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

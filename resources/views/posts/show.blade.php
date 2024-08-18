@@ -14,20 +14,35 @@
             <div class="row">
                 <div class="col-lg-8">
                     <div class="mb-5">
-                        <div class="d-flex mb-2">
-                            <a class="text-secondary text-uppercase font-weight-medium" href="">Admin</a>
-                            <span class="text-primary px-2">|</span>
-                            <a class="text-secondary text-uppercase font-weight-medium" href="">Cleaning</a>
-                            <span class="text-primary px-2">|</span>
-                            <a class="text-secondary text-uppercase font-weight-medium" href="">
-                                {{ $post->created_at }}
-                            </a>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <a class="text-secondary text-uppercase font-weight-medium" href="">Admin</a>
+                                <span class="text-primary px-2">|</span>
+                                <a class="text-secondary text-uppercase font-weight-medium" href="">Cleaning</a>
+                                <span class="text-primary px-2">|</span>
+                                <a class="text-secondary text-uppercase font-weight-medium">
+                                    {{ $post->created_at }}
+                                </a>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a class="btn btn-sm btn-outline-dark py-2 mx-2"
+                                    href="{{ route('posts.edit', ['post' => $post->id]) }}">Edit
+                                    Post</a>
+                                <form type="submit" action="{{ route('posts.destroy', ['post' => $post->id]) }}"
+                                    method="POST" onSubmit="return confirm('Are you sure you wish to delete?');">
+
+                                    @csrf @method('DELETE')
+                                    <button class="btn btn-sm btn-outline-danger py-2">Delete</button>
+                                </form>
+
+                            </div>
                         </div>
                         <h1 class="section-title mb-3">{{ $post->title }}</h1>
                     </div>
 
                     <div class="mb-5">
-                        <img class="img-fluid rounded w-100 mb-4" src="/img/carousel-1.jpg" alt="Image">
+                        <img class="img-fluid rounded w-100 mb-4" src="{{ asset('storage/' . $post->photo) }}"
+                            alt="Image">
                         <p>{{ $post->content }}</p>
                     </div>
 
