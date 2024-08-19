@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
+            // 1-usul
+            // $table->unsignedBigInteger('post_id');
+            // $table->foreign('post_id')->references('id')->on('posts');
+            // 2-usul
+            $table->foreignId('post_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+
+            $table->text('body');
             $table->timestamps();
         });
     }
