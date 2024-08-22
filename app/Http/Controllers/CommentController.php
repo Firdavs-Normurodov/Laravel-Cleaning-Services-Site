@@ -13,12 +13,13 @@ class CommentController extends Controller
         $comment = Comment::create([
             'body' => $request->body,
             'post_id' => $request->post_id,
-            'user_id' => $request->user_id
+            'user_id' => 1
         ]);
-        $post = Post::find($request->post_id);
-        $post->comments()->create([
-            'body' => $request->body,
-            'user_id' => $request->user_id
-        ]);
+        // $post = Post::find($request->post_id);
+        // $post->comments()->create([
+        //     'body' => $request->body,
+        //     'user_id' => $request->user_id
+        // ]);
+        return redirect()->back();
     }
 }
