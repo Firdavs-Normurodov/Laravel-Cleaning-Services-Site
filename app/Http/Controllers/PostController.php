@@ -3,14 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
+use App\Models\Category;
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'show']);
+    }
     public function index()
     {
         $posts = Post::latest()->paginate(9);
@@ -20,7 +25,10 @@ class PostController extends Controller
 
     public function create()
     {
-        return view('posts.create');
+        return view('posts.create')->with([
+            'categories' => Category::all(),
+            'tags' => Tag::all(),
+        ]);
     }
 
 
@@ -33,11 +41,18 @@ class PostController extends Controller
         }
 
         $post = Post::create([
+            'user_id' => auth()->user()->id,
+            'category_id' => $request->category_id,
             'title' => $request->title,
             'short_content' => $request->short_content,
             'content' => $request->content,
             'photo' => $path ?? null,
         ]);
+        if (isset($request->tags)) {
+            foreach ($request->tags as $tag) {
+                $post->tags()->attach($tag);
+            }
+        }
         return redirect()->route('posts.index');
     }
 
@@ -45,7 +60,9 @@ class PostController extends Controller
     {
         return view('posts.show')->with([
             'post' => $post,
-            'recent_posts' => Post::latest()->get()->except($post->id)->take(5)
+            'recent_posts' => Post::latest()->get()->except($post->id)->take(5),
+            'categories' => Category::all(),
+            'tags' => Tag::all(),
         ]);
     }
 

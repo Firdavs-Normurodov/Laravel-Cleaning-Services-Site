@@ -14,6 +14,18 @@
             <a href="{{ route('posts.index') }}" class="nav-item nav-link">Blog</a>
             <a href="{{ route('contact') }}" class="nav-item nav-link">Contact</a>
         </div>
-        <a href="{{ route('posts.create') }}" class="btn btn-primary mr-3 d-none d-lg-block">Post Create</a>
+        @auth
+            <div>
+                {{ auth()->user()->name }}
+            </div>
+            <a href="{{ route('posts.create') }}" class="btn btn-primary mr-2 d-none d-lg-block">Post Create</a>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button class="btn btn-dark mr-2 d-none d-lg-block" type="submit">Logout</button>
+            </form>
+        @else
+            <a href="{{ route('login') }}" class="btn btn-primary mr-2 d-none d-lg-block">Login</a>
+
+        @endauth
     </div>
 </nav>

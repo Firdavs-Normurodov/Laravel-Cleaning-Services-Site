@@ -28,6 +28,28 @@
 
 
                             </div>
+                            <div class="control-group mb-3">
+
+
+                                <select name="category_id">
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                            </div>
+                            <div class="control-group mb-3">
+
+
+                                <select name="tags[]" multiple>
+                                    @foreach ($tags as $tag)
+                                        <option value="{{ $tag->id }}">{{ $tag->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                            </div>
                             <div class="control-group ">
                                 @error('photo')
                                     <div class="alert alert-danger" role="alert">
