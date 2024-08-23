@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostCreated;
 use App\Http\Requests\StorePostRequest;
+use App\Jobs\ChangePost;
+use App\Jobs\UploadBigFile;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
@@ -55,6 +58,8 @@ class PostController extends Controller
                 $post->tags()->attach($tag);
             }
         }
+        PostCreated::dispatch($post);
+        ChangePost::dispatch($post)->onQueue('uploading');
         return redirect()->route('posts.index');
     }
 
