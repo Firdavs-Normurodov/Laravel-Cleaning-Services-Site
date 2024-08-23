@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
@@ -15,6 +16,7 @@ class PostController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->except(['index', 'show']);
+        $this->authorizeResource(Post::class, 'post');
     }
     public function index()
     {
@@ -68,13 +70,13 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
+
         return view('posts.edit')->with(['post' => $post]);
     }
 
 
     public function update(StorePostRequest $request, Post $post)
     {
-
         if ($request->hasFile('photo')) {
             if (isset($post->photo)) {
                 Storage::delete($post->photo);

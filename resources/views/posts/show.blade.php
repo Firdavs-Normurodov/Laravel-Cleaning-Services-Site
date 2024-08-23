@@ -25,18 +25,20 @@
                                 </a>
                             </div>
                             @auth
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <a class="btn btn-sm btn-outline-dark py-2 mx-2"
-                                        href="{{ route('posts.edit', ['post' => $post->id]) }}">Edit
-                                        Post</a>
-                                    <form type="submit" action="{{ route('posts.destroy', ['post' => $post->id]) }}"
-                                        method="POST" onSubmit="return confirm('Are you sure you wish to delete?');">
+                                @canany(['update', 'delete'], $post)
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a class="btn btn-sm btn-outline-dark py-2 mx-2"
+                                            href="{{ route('posts.edit', ['post' => $post->id]) }}">Edit
+                                        </a>
+                                        <form type="submit" action="{{ route('posts.destroy', ['post' => $post->id]) }}"
+                                            method="POST" onSubmit="return confirm('Are you sure you wish to delete?');">
 
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-sm btn-outline-danger py-2">Delete</button>
-                                    </form>
+                                            @csrf @method('DELETE')
+                                            <button class="btn btn-sm btn-outline-danger py-2">Delete</button>
+                                        </form>
 
-                                </div>
+                                    </div>
+                                @endcanany
                             @endauth
                         </div>
                         <div class="d-flex mb-2">
