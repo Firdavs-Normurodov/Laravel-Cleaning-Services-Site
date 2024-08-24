@@ -6,12 +6,17 @@ use App\Events\PostCreated;
 use App\Http\Requests\StorePostRequest;
 use App\Jobs\ChangePost;
 use App\Jobs\UploadBigFile;
+use App\Mail\PostCreated as MailPostCreated;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Notifications\PostCreated as NotificationsPostCreated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
@@ -23,7 +28,12 @@ class PostController extends Controller
     }
     public function index()
     {
-        $posts = Post::latest()->paginate(9);
+        // Cache::pull('posts');
+        // $posts = Post::latest()->paginate(9);
+        // $posts = Post::latest()->get();
+        $posts = Cache::remember('posts', now()->addsecond(30), function () {
+            return Post::latest()->get();
+        });
         return view('posts.index')->with('posts', $posts);
     }
 
@@ -60,7 +70,10 @@ class PostController extends Controller
         }
         PostCreated::dispatch($post);
         ChangePost::dispatch($post)->onQueue('uploading');
-        return redirect()->route('posts.index');
+
+        Mail::to($request->user())->later(now()->addMillisecond(40), (new MailPostCreated($post))->onQueue('sending-mails'));
+        Notification::send(auth()->user(), new NotificationsPostCreated($post));
+        return redirect()->route('posts.index')->with('success', 'Post created !');
     }
 
     public function show(Post $post)

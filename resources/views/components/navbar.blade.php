@@ -6,18 +6,29 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+        {{-- {{ dump($current_locale) }} --}}
         <div class="navbar-nav mr-auto py-0">
-            <a href="/" class="nav-item nav-link ">Home</a>
-            <a href="{{ route('about') }}" class="nav-item nav-link">About</a>
+            <a href="/" class="nav-item nav-link ">{{ __('Home') }}</a>
+            <a href="{{ route('about') }}" class="nav-item nav-link">{{ __('About') }}</a>
             <a href="{{ route('service') }}" class="nav-item nav-link">Service</a>
             <a href="{{ route('project') }}" class="nav-item nav-link">Project</a>
             <a href="{{ route('posts.index') }}" class="nav-item nav-link">Blog</a>
             <a href="{{ route('contact') }}" class="nav-item nav-link">Contact</a>
         </div>
+        {{-- @foreach ($all_locales as $locale)
+            <a href={{ route('change.locale', ['locale' => $locale]) }} class="btn btn-primary mr-2 d-none d-lg-block">
+                {{ $locale }}
+            </a>
+        @endforeach --}}
+
         @auth
-            <div>
-                {{ auth()->user()->name }}
-            </div>
+
+            <a href="{{ route('notifications.index') }}" class="btn d-flex align-items-center">
+                <i class="fa-solid fa-bell" style="font-size: 1.5rem;color:red"></i>
+                <span class="badge "style="color:red">{{ auth()->user()->unreadNotifications()->count() }}</span>
+            </a>
+
+
             <a href="{{ route('posts.create') }}" class="btn btn-primary mr-2 d-none d-lg-block">Post Create</a>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
