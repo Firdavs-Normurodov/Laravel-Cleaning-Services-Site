@@ -10,6 +10,7 @@ use App\Mail\PostCreated as MailPostCreated;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 use App\Notifications\PostCreated as NotificationsPostCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -28,9 +29,8 @@ class PostController extends Controller
     }
     public function index()
     {
-        // Cache::pull('posts');
-        // $posts = Post::latest()->paginate(9);
-        // $posts = Post::latest()->get();
+        // $user = User::first();
+        // dd($user->name);
         $posts = Cache::remember('posts', now()->addsecond(30), function () {
             return Post::latest()->get();
         });
